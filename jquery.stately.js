@@ -11,11 +11,15 @@
  
 (function($) {
   
-  var CSS_RESET = { height: "", opacity: "", left: "", top: "", display: "" }; // todo switch to just clearing the style attribute? need to override sometimes
+  var CSS_RESET = { height: "", opacity: "", left: "", top: "", display: "", zIndex: "" }; // todo switch to just clearing the style attribute? need to override sometimes
 
   $.fn.stately = function(arg) {
     var $el = this;
     // console.log(this);
+    
+    if (typeof arg === 'string') {
+      arg = arg.split(' ');
+    }
     
     if (typeof arg == 'object' && arg.length) { // set up binding for these states
       $el.data('states', arg);
@@ -27,25 +31,27 @@
       });
       
       $.each( $el.data('states'), function(k,v) {
-        
         $el.bind(v, function() {
+          var state = $el.data('state');
+          if (state == v) return; // catch no change, wtf?
+          if ($el.is('.FLUX')) return; // bail if another state change is in progress, TODO: switch
+          
+          // console.log(state + '->' + v);
+          
           $el.removeClass('DONE').addClass('FLUX');
           $el.removeClass($el.data('states').join(' '));
-
-          var state = $el.data('state');
 
           $el.addClass(v);
 
           var transition = $el.data('transitions')[state + " -> " + v];
 
-          if (transition && transition.call() === false) {
-            // console.log("Called " + transition);
+          if (transition && (transition.call() === false)) {
+            // let the transition callback trigger DONE
           } else {
             $el.trigger('DONE');
           }
           
           $el.data('state', v);
-          
         });
       });
       
