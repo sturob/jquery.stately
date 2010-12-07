@@ -32,7 +32,7 @@ body class="LOGIN DONE"
 # Advanced Example
 
     $('body').stately({
-      'LOGIN->MAIN': function() {
+      'LOGIN -> MAIN': function() {
         $('div#login').animate( { opacity: 0 }, 1000, function () {
           $(this).trigger('DONE');
         })
