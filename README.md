@@ -35,9 +35,26 @@ body class="LOGIN DONE"
       'LOGIN -> MAIN': function() {
         $('div#login').animate( { opacity: 0 }, 1000, function () {
           $(this).trigger('DONE');
-        })
+        }).addClass('reset');
         return false;
       }
     });
 
     $('body').trigger('MAIN');
+
+While the animation takes place:
+
+<body class="LOGIN -MAIN FLUX">
+
+When it has completed:
+
+body class="MAIN DONE"
+
+So you can write css rules to be applied *during* transitions:
+
+    .LOGIN.-MAIN div {
+      opacity: 0.4;
+    }
+
+
+

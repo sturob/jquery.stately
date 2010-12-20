@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>stately </title>
+        
+    <style type="text/css" media="screen">
+      #move_me {
+        color: white;
+      }
+      
+      #animate.off {
+        color: #999;
+      }
+
+      .left #move_me {
+        margin-left: 0px;
+      }
+      .center #move_me {
+        margin-left: 100px;
+      }
+      .right #move_me {
+        margin-left: 200px;
+      }
+      
+      #main.left.-center {
+        opacity: 0.4;
+      }
+      
+      #main.center.-right {
+        outline: 4px solid red;
+      }
+      
+      #main.DONE {
+        background: green;
+      }
+      
+      #main.FLUX {
+        background: orange;
+      }
+    </style>
+
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="../jquery.stately.js"></script>
+
+    <script type="text/javascript">
+
+      var transitions = {
+        'left -> center': function() { 
+          $('#move_me').stop().animate({ marginLeft: 100 }, 1000, function() {
+            $('#main').trigger("DONE");
+          }).addClass('reset');
+          return false;
+        },
+        'center -> right': function() {
+          var def = { marginLeft: 100 };
+          $('#move_me').stop().animate({ marginLeft: 200 }, 1000, function() {
+            $('#main').trigger("DONE");
+          }).addClass('reset');
+          return false;
+        }
+      };
+      
+      var ANIMATE = true;
+  
+      $(document).ready(function() { 
+
+        $(document).bind('keydown', function(event) {
+          if (event.keyCode == 32) {
+            $('#control a#next').click();
+          }
+        });
+
+        $('#control a#next').click(function() {
+          if ( $('#main').is('.left') ) {
+            $('#main').trigger('center');
+          } else if ( $('#main').is('.center') ) {
+            $('#main').trigger('right');            
+          } else if ( $('#main').is('.right') ) {
+            $('#main').trigger('left');
+          }
+        });
+        
+        $('#main').stately("left center right");
+        
+
+        $('#animate').stately("on off");
+
+        $('#control a#animate').click(function() {
+          if (ANIMATE) {
+            $('#main').stately(transitions);
+            $('#animate').trigger('on');  
+          } else {
+            $('#main').stately({});
+            $('#animate').trigger('off');
+          }
+          ANIMATE = ! ANIMATE;
+        });
+        
+        $('#main').stately(transitions);
+        
+      });
+
+    </script>
+    
+  </head>
+  <body>
+    
+    <div id="control">
+      <a id="animate">animate</a>
+      <a id="next" href="#">&rarr;</a>
+    </div>
+    <div id="main">
+      <div id="move_me">+++</div>
+    </div>
+    
+  </body>
+</html>

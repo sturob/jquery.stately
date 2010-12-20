@@ -13,7 +13,7 @@
  
 (function($) {
   
-  var CSS_RESET = { height: "", opacity: "", left: "", top: "", display: "", zIndex: "" }; // todo switch to just clearing the style attribute? need to override sometimes
+  var CSS_RESET = { margin: "", height: "", opacity: "", left: "", top: "", display: "", zIndex: "" }; // todo switch to just clearing the style attribute? need to override sometimes???
 
   $.fn.stately = function(arg) {
     var $el = this;
@@ -27,37 +27,44 @@
       $el.data('transitions', {});
       
       $el.bind('DONE', function() {
+        var new_state = $el.data('state');
+        
+        var to_states = '-' + $el.data('states').join(' -');
+        var all_states = $el.data('states').join(' ');
+        
+        $el.removeClass(to_states + " " + all_states).addClass(new_state); // we are at rest!
+        $el.css(CSS_RESET).find('.reset').css(CSS_RESET); // do this better
         $el.removeClass('FLUX').addClass('DONE');
-        $el.css(CSS_RESET).find('div').css(CSS_RESET) // do better
       });
       
       $.each( $el.data('states'), function(k,v) {
         $el.bind(v, function(foo) {
           
+          // if (state == v) return; // catch no change, wtf?
+          if ($el.is('.FLUX')) { // bail if another state change is in progress, TODO: switch
+            $el.trigger('DONE');
+          }
+
           var state = $el.data('state');
-          if (state == v) return; // catch no change, wtf?
-          if ($el.is('.FLUX')) return; // bail if another state change is in progress, TODO: switch
+          
           
           // console.log(state + '->' + v);
           
-          $el.removeClass('DONE').addClass('FLUX');
-          $el.removeClass($el.data('states').join(' '));
-
-          $el.addClass(v);
-
+          $el.removeClass('DONE').addClass('FLUX -' + v);
+          
           var transitions = $el.data('transitions');
           var transition = transitions[state + ' -> ' + v] || 
                            transitions[state + ' -> *'] ||
                            transitions['* -> ' + v] ||
                            transitions['* -> *'];
 
-          if (transition && (transition.call($el, [state, v]) === false)) {
+          $el.data('state', v);
+
+          if (transition && (transition.call($el) === false)) {
             // let the transition callback trigger DONE
           } else {
             $el.trigger('DONE');
           }
-          
-          $el.data('state', v);
         });
       });
       
