@@ -42,14 +42,12 @@
           
           // if (state == v) return; // catch no change, wtf?
           if ($el.is('.FLUX')) { // bail if another state change is in progress, TODO: switch
-            $el.trigger('DONE');
+            return;
+            // $el.trigger('DONE');
           }
 
           var state = $el.data('state');
-          
-          
-          // console.log(state + '->' + v);
-          
+                    
           $el.removeClass('DONE').addClass('FLUX -' + v);
           
           var transitions = $el.data('transitions');
@@ -60,7 +58,7 @@
 
           $el.data('state', v);
 
-          if (transition && (transition.call($el) === false)) {
+          if (transition && (transition.call($el, [state, v]) === false)) {
             // let the transition callback trigger DONE
           } else {
             $el.trigger('DONE');
