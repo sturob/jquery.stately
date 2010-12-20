@@ -22,11 +22,11 @@
   
     $('body').stately('MAIN LOGIN SIGNUP ABOUT');
 
-body class="MAIN"
+    <body class="MAIN">
 
     $('body').trigger('LOGIN');
 
-body class="LOGIN DONE"
+    <body class="LOGIN">
 
 
 # Advanced Example
@@ -42,13 +42,17 @@ body class="LOGIN DONE"
 
     $('body').trigger('MAIN');
 
+Before the animation starts:
+
+    <body class="LOGIN DONE">
+
 While the animation takes place:
 
-&lt;body class="LOGIN -MAIN FLUX"&gt;
+    <body class="LOGIN -MAIN FLUX">
 
 When it has completed:
 
-body class="MAIN DONE"
+    <body class="MAIN DONE">
 
 So you can write css rules to be applied *during* transitions:
 
