@@ -44,7 +44,7 @@ body class="LOGIN DONE"
 
 While the animation takes place:
 
-<body class="LOGIN -MAIN FLUX">
+&lt;body class="LOGIN -MAIN FLUX"&gt;
 
 When it has completed:
 
