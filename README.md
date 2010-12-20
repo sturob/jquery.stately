@@ -34,9 +34,9 @@
     $('body').stately({
       'LOGIN -> MAIN': function() {
         $('div#login').animate( { opacity: 0 }, 1000, function () {
-          $(this).trigger('DONE');
-        }).addClass('reset');
-        return false;
+          $(this).trigger('DONE'); // we're done, so finish up
+        }).addClass('reset'); // tells stately to reset inline css when the animation completes
+        return false; // this tells stately that we will trigger('DONE')
       }
     });
 
