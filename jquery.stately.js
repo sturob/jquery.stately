@@ -26,7 +26,7 @@
       $el.data('states', arg);
       $el.data('transitions', {});
       
-      $el.bind('DONE', function() {
+      $el.bind('DONE', function(e) {
         var new_state = $el.data('state');
         
         var to_states = '-' + $el.data('states').join(' -');
@@ -35,6 +35,7 @@
         $el.removeClass(to_states + " " + all_states).addClass(new_state); // we are at rest!
         $el.css(CSS_RESET).find('.reset').css(CSS_RESET); // do this better
         $el.removeClass('FLUX').addClass('DONE');
+        e.stopPropagation();
       });
       
       $.each( $el.data('states'), function(k,v) {
