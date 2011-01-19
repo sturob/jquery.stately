@@ -23,41 +23,33 @@
     if (typeof arg == 'object' && arg.length) { // set up binding for these states
       $el.data('states', arg);
       $el.data('transitions', {});
-      
-      $el.bind('DONE', function(e) {
-        var new_state = $el.data('state');
-        
-        var to_states = '-' + $el.data('states').join(' -');
-        var all_states = $el.data('states').join(' ');
-        
-        $el.removeClass(to_states + " " + all_states).addClass(new_state); // we are at rest!
-        $el.attr('style', '').find('.reset').attr('style', '');
-        $el.removeClass('FLUX').addClass('DONE');
-        e.stopPropagation();
-      });
-      
-      $.each( $el.data('states'), function(k,v) {
-        $el.bind(v, function(foo) {
+    
+      $.each( $el.data('states'), function(n, to_state) {
+        $el.bind(to_state, function(foo) { // gets called on trigger(STATE) - begins transition
+// ------>
+          var from_state = $el.data('state');
           
-          // if (state == v) return; // catch no change, wtf?
-          if ($el.is('.FLUX')) { // bail if another state change is in progress, TODO: switch
-            // return;
-            $el.trigger('DONE');
+          // if (from_state == to_state) return; // catch no change?
+          
+          if ($el.is('.FLUX')) { // if another state change is in progress, DONE it and queue
+            $el.trigger('DONE', function() {
+              $el.trigger(to_state);
+            });
+            return;
           }
 
-          var state = $el.data('state');
-
-          $el.removeClass('DONE').addClass('FLUX -' + v);
+          $el.removeClass('DONE').addClass('FLUX -' + to_state);
           
           var transitions = $el.data('transitions');
-          var transition = transitions[state + ' -> ' + v] || 
-                           transitions[state + ' -> *'] ||
-                           transitions['* -> ' + v] ||
+          var transition = transitions[from_state + ' -> ' + to_state] || 
+                           transitions[from_state + ' -> *'] ||
+                           transitions['* -> ' + to_state] ||
                            transitions['* -> *'];
 
-          $el.data('state', v);
+// ------>
+          $el.data('state', to_state);
 
-          if (transition && (transition.call($el, [state, v]) === false)) {
+          if (transition && (transition.call($el, [from_state, to_state]) === false)) {
             // let the transition callback trigger DONE
           } else {
             $el.trigger('DONE');
@@ -65,12 +57,28 @@
         });
       });
       
+      $el.bind('DONE', function(e, f) { // clean up styles + set correct classes - ends trans
+// ------>
+        var new_state = $el.data('state');
+
+        var to_states = '-' + $el.data('states').join(' -');
+        var all_states = $el.data('states').join(' ');
+
+        $el.removeClass(to_states + " " + all_states).addClass(new_state); // we are at rest!
+        $el.attr('style', '').find('.reset').attr('style', '');
+        // todo clear animations too
+        $el.removeClass('FLUX').addClass('DONE');
+        e.stopPropagation();
+
+        f && f.call();
+      });
+      
       $el.trigger(arg[0]); // set state to first
     } else {
       $el.data('transitions', arg);
     }
 
-    return this;
+    return;
   };
  
 })(jQuery);

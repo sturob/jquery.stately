@@ -54,15 +54,20 @@
           return false;
         },
         'center -> right': function() {
-          var def = { marginLeft: 100 };
           $('#move_me').stop().animate({ marginLeft: 200 }, 1000, function() {
             $('#main').trigger("DONE");
           }).addClass('reset');
           return false;
+        },
+        'right -> left': function() {
+          $('#move_me').stop().animate({ marginLeft: 0 }, 1000, function() {
+            $('#main').trigger("DONE");
+          }).addClass('reset');
         }
       };
       
       var ANIMATE = true;
+      var current = 'left';
   
       $(document).ready(function() { 
 
@@ -72,13 +77,16 @@
           }
         });
 
-        $('#control a#next').click(function() {
-          if ( $('#main').is('.left') ) {
+        $('#control a#next').click(function() {  
+          if ( current == 'left' ) {
             $('#main').trigger('center');
-          } else if ( $('#main').is('.center') ) {
+            current = 'center';
+          } else if ( current == 'center' ) {
             $('#main').trigger('right');            
-          } else if ( $('#main').is('.right') ) {
+            current = 'right';
+          } else if ( current == 'right' ) {
             $('#main').trigger('left');
+            current = 'left';
           }
         });
         
