@@ -13,8 +13,6 @@
  
 (function($) {
   
-  var CSS_RESET = { margin: "", height: "", opacity: "", left: "", top: "", display: "", zIndex: "" }; // todo switch to just clearing the style attribute? need to override sometimes???
-
   $.fn.stately = function(arg) {
     var $el = this;
     
@@ -33,7 +31,7 @@
         var all_states = $el.data('states').join(' ');
         
         $el.removeClass(to_states + " " + all_states).addClass(new_state); // we are at rest!
-        $el.css(CSS_RESET).find('.reset').css(CSS_RESET); // do this better
+        $el.attr('style', '').find('.reset').attr('style', '');
         $el.removeClass('FLUX').addClass('DONE');
         e.stopPropagation();
       });
@@ -43,12 +41,12 @@
           
           // if (state == v) return; // catch no change, wtf?
           if ($el.is('.FLUX')) { // bail if another state change is in progress, TODO: switch
-            return;
-            // $el.trigger('DONE');
+            // return;
+            $el.trigger('DONE');
           }
 
           var state = $el.data('state');
-                    
+
           $el.removeClass('DONE').addClass('FLUX -' + v);
           
           var transitions = $el.data('transitions');
