@@ -4,7 +4,7 @@
  * Dual licensed under MIT and GPL.
  * Date: 2/12/2010
  * @author Stuart Robinson
- * @version 0.1.0
+ * @version 0.2.0
  */
 
 
