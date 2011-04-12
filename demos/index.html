@@ -6,7 +6,7 @@
     <title>stately </title>
         
     <style type="text/css" media="screen">
-      #move_me {
+      .ex {
         color: white;
       }
       
@@ -14,14 +14,19 @@
         color: #999;
       }
 
-      .left #move_me {
+      div.left.ex div {
         margin-left: 0px;
+        background: #000;
       }
-      .center #move_me {
+      div.center.ex div {
+        margin-top: 50px;
         margin-left: 100px;
+        background: #444;
       }
-      .right #move_me {
+      div.right.ex div {
+        margin-top: 100px;
         margin-left: 200px;
+        background: #888;
       }
       
       #main.left.-center {
@@ -39,6 +44,15 @@
       #main.FLUX {
         background: orange;
       }
+      
+      #more_ex span {
+        cursor: pointer;
+      }
+      
+      #more_ex span.off {
+        color: #666;
+        background: #999;
+      }
     </style>
 
     <script type="text/javascript" src="jquery.js"></script>
@@ -47,23 +61,24 @@
     <script type="text/javascript">
 
       var transitions = {
+        'right -> left': function() {
+          $('div', this).stop().animate({ background: '#000', marginLeft: 0 }, 1000, function() {
+            $(this).trigger("DONE");
+          }).addClass('reset');
+        },
         'left -> center': function() { 
-          $('#move_me').stop().animate({ marginLeft: 100 }, 1000, function() {
-            $('#main').trigger("DONE");
+          $('div', this).stop().animate({ background: '#444', marginTop: 50, marginLeft: 100 }, 1000, function() {
+            $(this).trigger("DONE");
           }).addClass('reset');
           return false;
         },
         'center -> right': function() {
-          $('#move_me').stop().animate({ marginLeft: 200 }, 1000, function() {
-            $('#main').trigger("DONE");
+          $('div', this).stop().animate({ background: '#888', marginTop: 100, marginLeft: 200 }, 1000, function() {
+            $(this).trigger("DONE");
           }).addClass('reset');
           return false;
-        },
-        'right -> left': function() {
-          $('#move_me').stop().animate({ marginLeft: 0 }, 1000, function() {
-            $('#main').trigger("DONE");
-          }).addClass('reset');
         }
+
       };
       
       var ANIMATE = true;
@@ -77,37 +92,50 @@
           }
         });
 
-        $('#control a#next').click(function() {  
+        $('#next').click(function() {  
           if ( current == 'left' ) {
-            $('#main').trigger('center');
+            $('.ex').trigger('center');
             current = 'center';
           } else if ( current == 'center' ) {
-            $('#main').trigger('right');            
+            $('.ex').trigger('right');            
             current = 'right';
           } else if ( current == 'right' ) {
-            $('#main').trigger('left');
+            $('.ex').trigger('left');
             current = 'left';
           }
         });
         
-        $('#main').stately("left center right");
+        $('.ex').stately("left center right");
         
-
         $('#animate').stately("on off");
 
         $('#control a#animate').click(function() {
           if (ANIMATE) {
-            $('#main').stately(transitions);
+            $('.ex:first').stately(transitions);
             $('#animate').trigger('on');  
           } else {
-            $('#main').stately({});
+            $('.ex:first').stately({});
             $('#animate').trigger('off');
           }
           ANIMATE = ! ANIMATE;
+          return false;
+        });
+
+        $('.ex:first').stately(transitions);
+        
+        // $('.ex').stately(transitions);
+        
+        var next = { on: 'off', off: 'on' };
+        
+        $('#more_ex span').stately('on off').click(function() {
+          var $s = $(this);          
+          $s.trigger( next[ $s.data('state') ] )          
+          return false;
         });
         
-        $('#main').stately(transitions);
-        
+        // $('#more_ex span').states('on off').click(function() {
+        //   $s.state( next[ $s.data('state') ] );
+        // });
       });
 
     </script>
@@ -119,8 +147,19 @@
       <a id="animate">animate</a>
       <a id="next" href="#">&rarr;</a>
     </div>
-    <div id="main">
+    
+    <div class="ex" id="main">
       <div id="move_me">+++</div>
+    </div>
+    
+    <div class="ex" id="sub">
+      <div>---</div>
+    </div>
+    
+    <div id="more_ex">
+      <span>Click</span> <span>Click</span> <span>Click</span><br>
+      <span>Click</span> <span>Click</span> <span>Click</span><br>
+      <span>Click</span> <span>Click</span> <span>Click</span>
     </div>
     
   </body>

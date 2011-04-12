@@ -4,7 +4,7 @@
  * Dual licensed under MIT and GPL.
  * Date: 2/12/2010
  * @author Stuart Robinson
- * @version 0.2.0
+ * @version 0.3.0
  */
 
 
@@ -14,71 +14,76 @@
 (function($) {
   
   $.fn.stately = function(arg) {
-    var $el = this;
+    var $els = this;
     
-    if (typeof arg === 'string') {
-      arg = arg.split(' ');
-    }
+    $els.each(function() {
+      var $el = $(this);
+
+      if (typeof arg === 'string') {
+        arg = arg.split(' ');
+      }
     
-    if (typeof arg == 'object' && arg.length) { // set up binding for these states
-      $el.data('states', arg);
-      $el.data('transitions', {});
+      if (typeof arg == 'object' && arg.length) { // set up binding for these states
+        $el.data('states', arg);
+        $el.data('transitions', {});
     
-      $.each( $el.data('states'), function(n, to_state) {
-        $el.bind(to_state, function(foo) { // gets called on trigger(STATE) - begins transition
-// ------>
-          var from_state = $el.data('state');
+        $.each( $el.data('states'), function(n, to_state) {
+          $el.bind(to_state, function(foo) { // gets called on trigger(STATE) - begins transition
+  // ------>
+    
+            var from_state = $el.data('state');
           
-          // if (from_state == to_state) return; // catch no change?
+            // if (from_state == to_state) return; // catch no change?
           
-          if ($el.is('.FLUX')) { // if another state change is in progress, DONE it and queue
-            $el.trigger('DONE', function() {
-              $el.trigger(to_state);
-            });
-            return;
-          }
+            if ($el.is('.FLUX')) { // if another state change is in progress, DONE it and queue
+              $el.trigger('DONE', function() {
+                $el.trigger(to_state);
+              });
+              return;
+            }
 
-          $el.removeClass('DONE').addClass('FLUX -' + to_state);
+            $el.removeClass('DONE').addClass('FLUX -' + to_state);
           
-          var transitions = $el.data('transitions');
-          var transition = transitions[from_state + ' -> ' + to_state] || 
-                           transitions[from_state + ' -> *'] ||
-                           transitions['* -> ' + to_state] ||
-                           transitions['* -> *'];
+            var transitions = $el.data('transitions');
+            var transition = transitions[from_state + ' -> ' + to_state] || 
+                             transitions[from_state + ' -> *'] ||
+                             transitions['* -> ' + to_state] ||
+                             transitions['* -> *'];
 
-// ------>
-          $el.data('state', to_state);
+  // ------>
+            $el.data('state', to_state);
 
-          if (transition && (transition.call($el, [from_state, to_state]) === false)) {
-            // let the transition callback trigger DONE
-          } else {
-            $el.trigger('DONE');
-          }
+            if (transition && (transition.call($el, [from_state, to_state]) === false)) {
+              // let the transition callback trigger DONE
+            } else {
+              $el.trigger('DONE');
+            }
+          });
         });
-      });
       
-      $el.bind('DONE', function(e, f) { // clean up styles + set correct classes - ends trans
-// ------>
-        var new_state = $el.data('state');
+        $el.bind('DONE', function(e, f) { // clean up styles + set correct classes - ends trans
+  // ------>
+          var new_state = $el.data('state');
 
-        var to_states = '-' + $el.data('states').join(' -');
-        var all_states = $el.data('states').join(' ');
+          var to_states = '-' + $el.data('states').join(' -');
+          var all_states = $el.data('states').join(' ');
 
-        $el.removeClass(to_states + " " + all_states).addClass(new_state); // we are at rest!
-        $el.attr('style', '').find('.reset').attr('style', '');
-        // todo clear animations too
-        $el.removeClass('FLUX').addClass('DONE');
-        e.stopPropagation();
+          $el.removeClass(to_states + " " + all_states).addClass(new_state); // we are at rest!
+          $el.removeAttr('style').find('.reset').removeAttr('style');
+          // todo clear animations too
+          $el.removeClass('FLUX').addClass('DONE');
+          e.stopPropagation();
 
-        f && f.call();
-      });
+          f && f.call();
+        });
       
-      $el.trigger(arg[0]); // set state to first
-    } else {
-      $el.data('transitions', arg);
-    }
+        $el.trigger(arg[0]); // set state to first
+      } else {
+        $el.data('transitions', arg);
+      }
+    });
 
-    return;
+    return this;
   };
  
 })(jQuery);
