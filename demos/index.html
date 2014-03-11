@@ -53,6 +53,10 @@
         color: #666;
         background: #999;
       }
+      
+      .hide { 
+        visibility: hidden;
+      }
     </style>
 
     <script type="text/javascript" src="jquery.js"></script>
@@ -125,17 +129,25 @@
         
         // $('.ex').stately(transitions);
         
-        var next = { on: 'off', off: 'on' };
+
         
-        $('#more_ex span').stately('on off').click(function() {
-          var $s = $(this);          
-          $s.trigger( next[ $s.data('state') ] )          
-          return false;
+        
+        $('#more_ex span').stately('off on').click(function() {
+          var $s = $(this), 
+              now = $s.state();
+          $s.state( ({ on:'off', off:'on' })[now] );
         });
         
-        // $('#more_ex span').states('on off').click(function() {
-        //   $s.state( next[ $s.data('state') ] );
-        // });
+        
+        $('#test_ex span#a').stately('show hide');
+        $('#test_ex span#b').stately('show hide');
+
+        var next = { show: 'hide', hide: 'show' };
+        $('#test_ex button').click(function() {
+          $('#test_ex #a').state( next[ $('#test_ex #a').state() ] );
+        });
+        
+        
       });
 
     </script>
@@ -143,6 +155,11 @@
   </head>
   <body>
     
+    
+    <h1>Examples</h1>
+    
+    <h2>1. Combo animation</h2>
+      
     <div id="control">
       <a id="animate">animate</a>
       <a id="next" href="#">&rarr;</a>
@@ -156,10 +173,23 @@
       <div>---</div>
     </div>
     
+    <section>
+    
+    <h2>2. multiple toggler, initted with one selector</h2>
     <div id="more_ex">
       <span>Click</span> <span>Click</span> <span>Click</span><br>
       <span>Click</span> <span>Click</span> <span>Click</span><br>
       <span>Click</span> <span>Click</span> <span>Click</span>
+    </div>
+    
+    
+    <h2>3. independent states test</h2>
+    
+    <div id="test_ex">
+      <span id="a">Hello</span>
+      <span id="b">Goodbye</span>
+      
+      <button>Test</button>
     </div>
     
   </body>
