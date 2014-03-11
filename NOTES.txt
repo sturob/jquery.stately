@@ -1,0 +1,173 @@
+
+jquery.boolean
+==
+
+$foo.classy(‘cool’, [  ])
+
+boolean is cool, but better would be to observe class add remove events
+
+$foo.bind(‘classChange’, function(class, added) {
+  class != ‘cool’ && return;
+  
+  if (added) {
+    alert(‘so cool’)
+  } else {
+    alert(‘so uncool’)
+  }
+});
+
+
+var a = function(b) { return function() { alert(b) } }
+
+$foo.observeClass(‘cool’,
+  a(‘so cool’), a(‘so uncool’)
+);
+
+$foo.toggleClass(‘cool’, true);
+
+
+$(‘#boo’).bi(‘on’); // setup
+<div id=“boo”>
+
+$(‘#boo’).bi(‘on’, true); // set it on
+<div id=“boo” class=“on”>
+
+$(‘#boo’).bi(‘on’, false); // set it of
+<div id=“boo” class=“”>
+
+$(‘#boo’).is(‘.on’) => true / false
+
+$(‘#boo’).bi(‘on’, [
+    function() { alert(“it’s on”) },
+    function() { alert(“it’s off”) }
+]);
+
+
+
+
+stately.js
+==========
+
+stick to core most proven functionality 
+
+
+next
+————
+
+// core functionality
+
+states(“on off”);
+
+state() -> ‘’
+
+state(‘on’)
+
+state() -> ‘on’
+
+state(‘’)
+
+
+
+- be smart
+
+<div id=“foo” class=“on”>
+
+$(‘#foo’).states(‘test off on’) // adds states + sets default
+
+
+- catch abuse
+
+.states(‘on off’)
+.states(‘none’) // warn?
+
+
+- 
+
+
+nah
+
+|
+v
+
+transitions({ 
+  ‘on -> off’: function () { },
+  ‘off -> on’: function () { }
+});
+
+.done() // run callback to tidyup css
+
+expand api
+ - more than one state machine per element?
+  : states([“ON OFF”, “LOADING LOADED”]);
+
+
+
+ 
+? add livequery (?) support
+
+ 
+ 
+/cease
+defereds’s instead of done ?
+things to consider
+
+
+.done() or .done(0) // first states
+.done(1) // second ??
+
+
+functon
+
+
+
+edge cases
+http://lrbabe.github.com/jquery.transition.js/index.html
+
+jquery-ui .addClass() lets you animate
+
+.stop(clearqueue, jumptoend)
+
+
+
+
+- override .animate() animate and flag with class=‘reset’
+
+- use globalcss for any styles that can’t be reset
+
+- clean removal
+
+.state
+
+
+- load templates based on state names
+
+.state(true)
+
+
+
+auto-classes + custom events
+
+======
+
+
+
+
+.stately(“”).transitions({ }).options({ }).templates({ })
+
+
+
+states: “on off deactivated”,
+transitions: {
+    ‘on -> off’: function() { },
+    ‘off -> on’: function() { },
+    ‘* -> deactivated’: function() {}
+},
+options: {
+    delay: 100, // delay finalising state, to allow testing of flux position
+    resetStyles: true
+},
+templates: {
+    element: ‘#button’,
+    prefix: ‘template_’,
+    data: item
+}
