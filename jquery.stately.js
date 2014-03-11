@@ -4,7 +4,7 @@
  * Dual licensed under MIT and GPL.
  * Date: 2/12/2010
  * @author Stuart Robinson
- * @version 0.3.0
+ * @version 0.4.0
  */
 
 
@@ -12,6 +12,17 @@
 
  
 (function($) {
+  
+  $.fn.state = function(to_state) {
+      var $el = $(this[0]),
+          current_state = $el.data('state');
+
+      if (typeof to_state === 'string') {
+        $el.trigger(to_state);
+      } else {
+        return current_state;
+      }
+  }
   
   $.fn.stately = function(arg) {
     var $els = this;

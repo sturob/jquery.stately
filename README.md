@@ -1,4 +1,14 @@
+
+# Huh?
+
+jquery.stately is a jquery plugin to ensure interface state consistency.
+
+It allows rapid prototyping without animationed transition, and then the addition of either CSS3 transition animations or jquery.animate(). It cleans up inline style after the animations finish, so you don't have to.
+
+
 # Basic Example
+
+Just some states to switch between.
 
 ## HTML
 
@@ -48,7 +58,7 @@ Before the animation starts:
 
 While the animation takes place:
 
-    <body class="LOGIN -MAIN FLUX">
+    <body class="LOGIN MAIN FLUX">
 
 When it has completed:
 
@@ -59,6 +69,7 @@ So you can write css rules to be applied *during* transitions:
     .LOGIN.-MAIN div {
       opacity: 0.4;
     }
+
 
 
 
